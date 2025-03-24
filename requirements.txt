@@ -1,0 +1,10 @@
+cloudpickle @ file:///home/conda/feedstock_root/build_artifacts/cloudpickle_1729059237860/work
+gym @ file:///Users/runner/miniforge3/conda-bld/gym_1673317581568/work
+gym-notices @ file:///home/conda/feedstock_root/build_artifacts/gym-notices_1671541680412/work
+importlib_metadata @ file:///home/conda/feedstock_root/build_artifacts/importlib-metadata_1726082825846/work
+numpy @ file:///Users/runner/miniforge3/conda-bld/numpy_1675642633393/work
+packaging==24.2
+setuptools-scm==8.2.0
+tomli==2.2.1
+typing_extensions==4.12.2
+zipp @ file:///home/conda/feedstock_root/build_artifacts/zipp_1731262100163/work
