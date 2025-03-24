@@ -2,32 +2,14 @@ from typing import Literal
 import pygame
 import os
 
-def cutting_sprite(character: Literal["freeza", "julian", "mark", "switch"], action: Literal["move", "run", "idle", "attack"], sprite_width=80, sprite_height=80):
-    if action == "move":
-        row_start = 0
-        col_start = 4
-        col_len = 4
-        
-    elif action == "idle":
-        row_start = 0
-        col_start = 0
-        col_len = 4
-    
-    elif action == "attack":
-        row_start = 1
-        col_start = 0
-        col_len = 4
-    
-    elif action == "run":
-        row_start = 2
-        col_start = 0
-        col_len = 3
-    
+def cutting_sprite(character: Literal["freeza", "julian", "mark", "switch"], action: Literal["move", "run", "idle", "attack", "defend", "jump"], pos, sprite_width=80, sprite_height=80):
+    #pos is like: [[1, 2], [2, 3]] the postion of sprite to extract
     path = "images/characters/{character}".format(character=character)
     image_sprite = pygame.image.load(os.path.join(path, "sprite.png")).convert_alpha()
     
-    frame = pygame.Surface((sprite_width * col_len, sprite_height), pygame.SRCALPHA).convert_alpha()
-    frame.blit(image_sprite, (0, 0), (col_start * sprite_width, row_start * sprite_height, sprite_width * col_len, sprite_height))
+    frame = pygame.Surface((sprite_width * len(pos), sprite_height), pygame.SRCALPHA).convert_alpha()
+    for idx, cur_pos in enumerate(pos):
+        frame.blit(image_sprite, (idx * sprite_width, 0), (cur_pos[1] * sprite_width, cur_pos[0] * sprite_height, sprite_width, sprite_height))
     pygame.image.save(frame, "{}/{}.png".format(path, action))
     print("Saved!")
  
