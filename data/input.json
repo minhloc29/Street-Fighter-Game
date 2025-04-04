@@ -1,0 +1,35 @@
+{
+    "movement": {
+      "walk": {
+        "left": ["A"],
+        "right": ["D"],
+        "up": ["W"],
+        "down": ["S"]
+      },
+      "run": {
+        "left": ["A", "A"],
+        "right": ["D", "D"],
+        "stop_conditions": {
+          "left": ["D"],
+          "right": ["A"]
+        }
+      }
+    },
+    "actions": {
+      "attack": {
+        "normal": ["J"],
+        "running": {
+          "input": ["J"],
+          "stop_after_attack": true
+        }
+      },
+      "defend": ["K"],
+      "jump": ["L"]
+    },
+    "timings": {
+      "double_tap_window_ms": 300,
+      "attack_cooldown_ms": 500,
+      "defend_duration_ms": 1000,
+      "jump_duration_ms": 400
+    }
+  }
