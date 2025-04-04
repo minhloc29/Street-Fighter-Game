@@ -1,84 +1,36 @@
-from .animation import Animation
-
-class Player:
-    def __init__(self, x, y, speed):
-        self.x = x
-        self.y = y
-        self.base_speed = speed
-        self.speed = speed  # Maintain current speed separately
-        self.state = "idle"
-        self.facing_right = True
-        self.press_d = 0
-        self.press_a = 0
-        self.animations = {
-            "idle": Animation(player_dict["idle"], 100),
-            "move": Animation(player_dict["move"], 100),
-            "attack": Animation(player_dict["attack"], 150),
-            "run": Animation(player_dict["run"], 150),
-        }
-
-    def move(self, keys):
-        move = False
+import pygame
+from .character import Character
+class PlayerCharacter(Character):
+    def update(self, keys, events, enemy_group):
         current_time = pygame.time.get_ticks()
 
-        # **Move Right ("D")**
-        if keys[pygame.K_d]:
-            self.facing_right = True
-            if current_time - self.press_d < 300:  # Detects double-tap
-                self.speed = self.base_speed * 3
-                self.state = "run"
-            else:
-                self.speed = self.base_speed
-                self.state = "move"
+        # Handle player input events
+        for event in events:
+            if event.type == pygame.KEYDOWN:
+                keys = pygame.key.get_pressed()  # refresh key state for each event
+                if event.key == pygame.K_d:
+                    if current_time - self.last_press_d < 300:
+                        self.start_running("right")
+                    self.last_press_d = current_time
+                elif event.key == pygame.K_a:
+                    if current_time - self.last_press_a < 300:
+                        self.start_running("left")
+                    self.last_press_a = current_time
+                elif event.key == pygame.K_j:
+                    self.attack()
+                elif event.key == pygame.K_k:
+                    self.defend()
+                elif event.key == pygame.K_l:
+                    if not self.is_jumping:
+                        self.jump()
 
-            if self.x + 80 + self.speed < WIDTH:
-                self.x += self.speed
-            self.press_d = current_time  # Update time of last press
-            move = True
+        # Update attack/defense cooldowns
+        self.update_cooldowns()
 
-        # **Move Left ("A")**
-        elif keys[pygame.K_a]:
-            self.facing_right = False
-            if current_time - self.press_a < 300:
-                self.speed = self.base_speed * 3
-                self.state = "run"
-            else:
-                self.speed = self.base_speed
-                self.state = "move"
+        # Handle movement if not busy with an attack, defense, or jump
+        if not (self.is_attacking or self.is_defending or self.is_jumping):
+            self.move(keys, enemy_group)
 
-            if self.x - self.speed > 0:
-                self.x -= self.speed
-            self.press_a = current_time
-            move = True
-
-        # **Move Up ("W")**
-        elif keys[pygame.K_w]:
-            if self.y - self.base_speed > 0:
-                self.y -= self.base_speed
-            self.state = "move"
-            move = True
-
-        # **Move Down ("S")**
-        elif keys[pygame.K_s]:
-            if self.y + 80 + self.base_speed < HEIGHT:
-                self.y += self.base_speed
-            self.state = "move"
-            move = True
-
-        # **Attack ("J")**
-        elif keys[pygame.K_j]:
-            self.state = "attack"
-            move = True
-
-        # **Reset to Idle if No Movement**
-        if not move:
-            self.state = "idle"
-            self.speed = self.base_speed  # Reset speed when stopping
-
-        print(f"State: {self.state}, Position: ({self.x}, {self.y}), Speed: {self.speed}")
-
-    def draw(self, screen):
-        frame = self.animations[self.state].get_current_frame()
-        if not self.facing_right:
-            frame = pygame.transform.flip(frame, True, False)
-        screen.blit(frame, (self.x, self.y))
+        # Update jumping mechanics if in the air
+        if self.is_jumping:
+            self.update_jump()
