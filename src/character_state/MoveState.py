@@ -25,10 +25,8 @@ class MoveState(State):
         new_x = self.character.x + dx
         new_y = self.character.y + dy
         
-        if 0 <= new_x <= WIDTH - 80:
-            self.character.x = new_x
-        if 0 <= new_y <= HEIGHT - 80:
-            self.character.y = new_y
+        self.character.x = new_x
+        self.character.y = new_y
             
         # State transitions (no direct input checks)
         if self.move_direction == (0, 0):
